@@ -128,6 +128,24 @@ class TestRequestHandling(unittest.TestCase):
         handler = self.app.route_message(message)
         self.assertNotEqual(handler,None)
 
+    def test_brubeck_handle_nested_request_with_object(self):
+        # set up our route
+        self.setup_nested_route_with_object()
+
+        #Make sure we get a handler back when we request one
+        message = MockMessage(path='/path')
+        handler = self.app.route_message(message)
+        self.assertNotEqual(handler,None)
+
+    def test_brubeck_handle_nested_request_with_method(self):
+        # set up our route
+        self.setup_nested_route_with_method()
+
+        #Make sure we get a handler back when we request one
+        message = MockMessage(path='/path')
+        handler = self.app.route_message(message)
+        self.assertNotEqual(handler,None)
+
     def test_cookie_handling(self):
         # set our cookie key and values
         cookie_key = 'my_key'
@@ -211,6 +229,14 @@ class TestRequestHandling(unittest.TestCase):
     def setup_route_with_method(self, url_pattern='^/$'):
         method = simple_handler_method
         self.app.add_route_rule(url_pattern, method)
+
+    def setup_nested_route_with_method(self, first_url_pattern='^/path', second_url_pattern='^$'):
+        method = simple_handler_method
+        self.app.add_route_rule(first_url_pattern, [(second_url_pattern, method)])
+
+    def setup_nested_route_with_method(self, first_url_pattern='^/path', second_url_pattern='^$'):
+        method = simple_handler_method
+        self.app.add_route_rule(first_url_pattern, [(second_url_pattern, method)])
 
 ##
 ## This will run our tests

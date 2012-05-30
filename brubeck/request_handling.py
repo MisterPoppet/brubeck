@@ -782,7 +782,15 @@ class Brubeck(object):
                 ### not present fall back to positional arguments
                 url_args = url_check.groupdict() or url_check.groups() or []
 
-                if inspect.isclass(kallable):
+                if isinstance(kallable, list):
+                    logging.info('Dispatch to Nested Route')
+                    ### Remove previously matched entry
+                    message.path = regex.sub('', message.path)
+                    ### Rebuild the routing table using the nested route list
+                    self.init_routes(kallable)
+                    ### Route the message again
+                    self.route_message(message)
+                elif inspect.isclass(kallable):
                     ### Handler classes must be instantiated
                     handler = kallable(self, message)
                     ### Attach url args to handler
